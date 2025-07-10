@@ -14,4 +14,4 @@ COPY lib/db2jcc4.jar lib/db2jcc4.jar
 COPY src/main/resources/db.properties config/db.properties
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-cp", "app.jar:lib/ojdbc11.jar", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "-cp", "app.jar:lib/db2jcc4.jar", "org.springframework.boot.loader.JarLauncher"]
