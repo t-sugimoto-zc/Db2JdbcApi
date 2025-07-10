@@ -98,6 +98,7 @@ public class TransactionService {
 
         try {
             session.conn.commit();
+            session.conn.setAutoCommit(true); // トランザクション終了
             session.conn.close();
             return Map.of("message", "コミットしました。");
         } catch (SQLException e) {
@@ -113,6 +114,7 @@ public class TransactionService {
 
         try {
             session.conn.rollback(session.savepoint);
+            session.conn.setAutoCommit(true); // トランザクション終了
             session.conn.close();
             return Map.of("message", "ロールバックしました。");
         } catch (SQLException e) {
