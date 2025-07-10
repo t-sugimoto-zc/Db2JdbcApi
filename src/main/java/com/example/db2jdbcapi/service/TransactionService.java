@@ -27,15 +27,21 @@ public class TransactionService {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("db.properties")) {
             props.load(input);
         } catch (Exception e) {
+            System.out.println("設定ファイルの読み込みに失敗しました: " + e.getMessage());
             return Map.of("error", "設定ファイルの読み込みに失敗しました。", "message", e.getMessage());
         }
 
         String url = props.getProperty("db.url");
+        String user = props.getProperty("db.user");
+        String password = props.getProperty("db.password");
+        String clientAppInfo = props.getProperty("db.clientApplicationInformation");
+
         Properties connectionProps = new Properties();
-        connectionProps.setProperty("user", props.getProperty("db.user"));
-        connectionProps.setProperty("password", props.getProperty("db.password"));
-        connectionProps.setProperty("ClientApplicationInformation",
-                props.getProperty("db.clientApplicationInformation"));
+        connectionProps.setProperty("user", user);
+        connectionProps.setProperty("password", password);
+        connectionProps.setProperty("ClientApplicationInformation", clientAppInfo);
+
+        System.out.println("DB接続開始: URL=" + url + ", USER=" + user + ", ClientAppInfo=" + clientAppInfo);
 
         try {
             Connection conn = DriverManager.getConnection(url, connectionProps);
@@ -45,6 +51,7 @@ public class TransactionService {
             sessions.put(sessionId, new Session(conn, savepoint));
             return Map.of("sessionId", sessionId);
         } catch (SQLException e) {
+            System.out.println("DB接続失敗: " + e.getMessage());
             return Map.of("error", "トランザクション開始に失敗しました。", "message", e.getMessage());
         }
     }
